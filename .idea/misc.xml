@@ -1,0 +1,24 @@
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/detit/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/bg_edit_text.xml" value="0.2" />
+        <entry key="..\:/Users/detit/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/bg_edit_text_lost_focus.xml" value="0.233" />
+        <entry key="..\:/Users/detit/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_email.xml" value="0.233" />
+        <entry key="..\:/Users/detit/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_email_lost_focus.xml" value="0.1" />
+        <entry key="..\:/Users/detit/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_person.xml" value="0.1" />
+        <entry key="..\:/Users/detit/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_visibility.xml" value="0.1" />
+        <entry key="..\:/Users/detit/AndroidStudioProjects/MyApplication/app/src/main/res/drawable/ic_visibility_off.xml" value="0.1" />
+        <entry key="..\:/Users/detit/AndroidStudioProjects/MyApplication/app/src/main/res/layout/activity_main.xml" value="0.4" />
+        <entry key="..\:/Users/detit/AndroidStudioProjects/MyApplication/app/src/main/res/layout/fragment_login.xml" value="0.25" />
+        <entry key="..\:/Users/detit/AndroidStudioProjects/MyApplication/app/src/main/res/layout/fragment_registration.xml" value="0.25" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
