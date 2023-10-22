@@ -30,7 +30,6 @@ class MyTextViewUsername : AppCompatEditText {
     }
 
     private fun setInitialDrawables() {
-        setButtonDrawables(startOfTheText = TextBoxIconLostFocus)
         this.compoundDrawablePadding = 16
         this.background = borderTextBoxLostFocus
     }
@@ -74,6 +73,6 @@ class MyTextViewUsername : AppCompatEditText {
         borderTextBoxLostFocus = ContextCompat.getDrawable(context, R.drawable.bg_edit_text_lost_focus) as Drawable
         setButtonDrawables(startOfTheText = TextBoxIconLostFocus)
         this.background = borderTextBoxLostFocus
-        this.hint = "Nama Pengguna"
+        this.hint = "Email"
     }
 }

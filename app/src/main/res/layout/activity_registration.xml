@@ -4,21 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".RegistrationActivity">
 
-    <com.example.myapplication.MyTextViewUsername
-        android:id="@+id/ed_login_email"
+    <com.example.myapplication.MyTextViewName
+        android:id="@+id/ed_register_name"
         android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="312dp"
+        android:layout_marginTop="284dp"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.example.myapplication.MyTextViewPassword
-        android:id="@+id/ed_login_password"
+    <com.example.myapplication.MyTextViewUsername
+        android:id="@+id/ed_register_email"
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -26,30 +25,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ed_login_email" />
+        app:layout_constraintTop_toBottomOf="@+id/ed_register_name" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnLogin"
+    <com.example.myapplication.MyTextViewPassword
+        android:id="@+id/ed_register_password"
         android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:text="Login"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/ed_login_password"
-        app:layout_constraintStart_toStartOf="@+id/ed_login_password"
-        app:layout_constraintTop_toBottomOf="@+id/ed_login_password"
-        app:layout_constraintVertical_bias="0.013" />
-
-    <TextView
-        android:id="@+id/tv_Registrasi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Registrasi disini"
-        android:textColor="@color/purple_500"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="24dp"
+        android:inputType="textPassword"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLogin"
-        app:layout_constraintVertical_bias="0.296" />
+        app:layout_constraintTop_toBottomOf="@+id/ed_register_email" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnRegister"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="124dp"
+        android:text="Register"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/ed_register_password"
+        app:layout_constraintStart_toStartOf="@+id/ed_register_password"
+        app:layout_constraintTop_toBottomOf="@+id/ed_register_password" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

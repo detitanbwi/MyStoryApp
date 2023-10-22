@@ -1,17 +1,13 @@
 package com.example.myapplication
 
 import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.text.InputType
-import android.text.method.PasswordTransformationMethod
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -49,9 +45,10 @@ class MyTextViewPassword : AppCompatEditText {
         this.compoundDrawablePadding = 16
         passwordVisibilityIcon = ContextCompat.getDrawable(context, R.drawable.ic_visibility) as Drawable
         passwordHiddenIcon = ContextCompat.getDrawable(context, R.drawable.ic_visibility_off) as Drawable
+        error = null
 
         // Menambahkan listener untuk ikon mata
-        passwordVisibilityIcon?.setBounds(0, 0, passwordVisibilityIcon.intrinsicWidth, passwordVisibilityIcon.intrinsicHeight)
+        passwordVisibilityIcon.setBounds(0, 0, passwordVisibilityIcon.intrinsicWidth, passwordVisibilityIcon.intrinsicHeight)
         setOnTouchListener(object : OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 if (event?.action == MotionEvent.ACTION_UP) {
