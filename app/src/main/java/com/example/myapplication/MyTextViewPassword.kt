@@ -45,7 +45,6 @@ class MyTextViewPassword : AppCompatEditText {
         this.compoundDrawablePadding = 16
         passwordVisibilityIcon = ContextCompat.getDrawable(context, R.drawable.ic_visibility) as Drawable
         passwordHiddenIcon = ContextCompat.getDrawable(context, R.drawable.ic_visibility_off) as Drawable
-        error = null
 
         // Menambahkan listener untuk ikon mata
         passwordVisibilityIcon.setBounds(0, 0, passwordVisibilityIcon.intrinsicWidth, passwordVisibilityIcon.intrinsicHeight)
@@ -65,17 +64,17 @@ class MyTextViewPassword : AppCompatEditText {
 
     override fun onFocusChanged(focused: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
         super.onFocusChanged(focused, direction, previouslyFocusedRect)
-        val passwordIcon: Drawable = if (!isPasswordVisible) {
-            passwordHiddenIcon
-        } else {
-            passwordVisibilityIcon
-        }
+//        val passwordIcon: Drawable = if (!isPasswordVisible) {
+//            passwordHiddenIcon
+//        } else {
+//            passwordVisibilityIcon
+//        }
         if(focused) {
             this.background = borderTextBox
             setCompoundDrawablesWithIntrinsicBounds(
                 tintDrawable(TextBoxIcon, Color.parseColor("#C600FD")),
                 null,
-                passwordIcon,
+                passwordHiddenIcon,
                 null
             )
         }else{
@@ -83,7 +82,7 @@ class MyTextViewPassword : AppCompatEditText {
             setCompoundDrawablesWithIntrinsicBounds(
                 tintDrawable(TextBoxIcon, Color.parseColor("#D5D5D5")),
                 null,
-                passwordIcon,
+                passwordHiddenIcon,
                 null
             )
 
@@ -99,10 +98,10 @@ class MyTextViewPassword : AppCompatEditText {
     ) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter)
         if (text.toString().length < 8) {
-            error = "Kata sandi minimal 8 karakter"
+            this.error = "Kata sandi minimal 8 karakter"
             isPasswordError = true
         } else {
-            error = null
+            this.error = null
             isPasswordError = false
         }
     }

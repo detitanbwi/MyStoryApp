@@ -46,16 +46,10 @@ class MainActivity : AppCompatActivity() {
         val name = userPreference.getUser().name
 
         if (userId != "" && token != "" && name != "") {
-            // Data exists in UserPreference
-            Toast.makeText(this, "User data exists. UserId: $userId, Token: $token", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "User data exists. UserId: $userId, Token: $token", Toast.LENGTH_SHORT).show()
             val intent = Intent(this@MainActivity, HomeActivity::class.java)
             startActivity(intent)
             finish()
-        }
-
-        binding.tvRegistrasi.setOnClickListener {
-            val intent = Intent(this, RegistrationActivity::class.java)
-            startActivity(intent)
         }
 
         with(binding){
@@ -69,6 +63,11 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this@MainActivity,"Semua kolom harus diisi", Toast.LENGTH_SHORT).show()
                 }
             }
+            tvRegistrasi.setOnClickListener {
+                val intent = Intent(this@MainActivity, RegistrationActivity::class.java)
+                startActivity(intent)
+            }
+            edLoginPassword.error= null
         }
 
 
@@ -82,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                     saveUser(it.loginResult.name, it.loginResult.token, it.loginResult.userId )
                     val intent = Intent(this@MainActivity, HomeActivity::class.java)
                     startActivity(intent)
+                    finish()
                 }
             }
         }
