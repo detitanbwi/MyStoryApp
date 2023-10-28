@@ -1,4 +1,5 @@
 package com.example.myapplication.data.retrofit
+import com.example.myapplication.data.response.DetailStoryResponse
 import com.example.myapplication.data.response.LoginResponse
 import com.example.myapplication.data.response.PostStoryResponse
 import com.example.myapplication.data.response.RegisterResponse
@@ -36,4 +37,10 @@ interface ApiService {
     fun getStories(
         @Header("Authorization") authorization: String
     ): Call<StoryListResponse>
+
+    @GET("stories/{id}")
+    fun getStoryById(
+        @Header("Authorization") authorization: String,
+        @Path("id") storyId: String
+    ): Call<DetailStoryResponse>
 }

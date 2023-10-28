@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.Manifest
+import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -8,7 +9,6 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -16,14 +16,17 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication.data.ResultState
 import com.example.myapplication.databinding.ActivityAddStoryBinding
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
 
 class AddStoryActivity : AppCompatActivity() {
 
@@ -34,6 +37,9 @@ class AddStoryActivity : AppCompatActivity() {
     private val FILENAME_FORMAT = "yyyyMMdd_HHmmss"
     private val timeStamp: String = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(Date())
     private lateinit var binding: ActivityAddStoryBinding
+    private lateinit var progressDialog: ProgressDialog
+    private lateinit var token: String
+
 
     private val viewModel by viewModels<AddStoryViewModel> {
         ViewModelFactory.getInstance()
@@ -42,9 +48,13 @@ class AddStoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        progressDialog = ProgressDialog(this)
+        progressDialog.setMessage("Posting...")
+        progressDialog.setCancelable(false)
+
         val userPreference = UserPreference(this)
         val userId = userPreference.getUser().userId
-        val token = userPreference.getUser().token
+        token = userPreference.getUser().token.toString()
         val name = userPreference.getUser().name
 
         with(binding){
@@ -56,6 +66,7 @@ class AddStoryActivity : AppCompatActivity() {
             }
             buttonAdd.setOnClickListener {
                 if (token != null) {
+                    progressDialog.show()
                     uploadImage(token,edAddDescription.text.toString())
                 }
             }
@@ -91,18 +102,24 @@ class AddStoryActivity : AppCompatActivity() {
                         }
 
                         is ResultState.Success -> {
-                            showToast(result.data.message)
-
+                            showToast(result.data.message,true)
+                            val homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+                            homeViewModel.getStories(token)
+                            val resultIntent = Intent()
+                            resultIntent.putExtra("isSuccess", true)
+                            setResult(RESULT_OK, resultIntent)
+                            finish()
                         }
 
                         is ResultState.Error -> {
-                            showToast(result.error)
-
+                            showToast(result.error,false)
                         }
                     }
+
                 }
+
             }
-        } ?: showToast(getString(R.string.empty_image_warning))
+        } ?: showToast(getString(R.string.empty_image_warning),false)
     }
     private fun openImagePicker() {
         Intent(Intent.ACTION_PICK).also {
@@ -172,8 +189,11 @@ class AddStoryActivity : AppCompatActivity() {
         //content://com.dicoding.picodiploma.mycamera.fileprovider/my_images/MyCamera/20230825_133659.jpg
     }
 
-    private fun showToast(message: String) {
+    private fun showToast(message: String,isSuccess: Boolean) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        if (isSuccess){
+            finish()
+        }
     }
     companion object {
         private const val REQUIRED_PERMISSION = Manifest.permission.CAMERA

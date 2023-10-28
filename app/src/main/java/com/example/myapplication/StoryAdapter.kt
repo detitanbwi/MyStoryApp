@@ -4,6 +4,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -29,10 +30,9 @@ class StoryAdapter : ListAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val story = getItem(position)
         holder.binding.cvStory.setOnClickListener {
-            //val moveIntent = Intent(holder.binding.root.context,HomeActivity::class.java)
-            //moveIntent.putExtra(HomeActivity.STORY_ID,story.id)
-            Toast.makeText(holder.binding.root.context,story.id,Toast.LENGTH_SHORT).show()
-            //holder.binding.root.context.startActivity(moveIntent)
+            val moveIntent = Intent(holder.binding.root.context,StoryDetailActivity::class.java)
+            moveIntent.putExtra(HomeActivity.STORY_ID,story.id)
+            holder.binding.root.context.startActivity(moveIntent)
         }
         holder.bind(story)
     }

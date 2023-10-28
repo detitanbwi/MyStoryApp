@@ -15,6 +15,7 @@ import com.example.myapplication.databinding.ActivityHomeBinding
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var token: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -26,17 +27,15 @@ class HomeActivity : AppCompatActivity() {
         binding.rvStory.layoutManager = layoutManager
 
         val userPreference = UserPreference(this)
-        val userId = userPreference.getUser().userId
-        val token = userPreference.getUser().token
-        val name = userPreference.getUser().name
+        token = userPreference.getUser().token.toString()
 
-        mainViewModel.getStories(token.toString())
+        mainViewModel.getStories(token)
 
         mainViewModel.stories.observe(this){
             setStoryData(it.listStory)
         }
 
-        binding.btnLogout.setOnClickListener {
+        binding.fabLogout.setOnClickListener {
             val sharedPrefs = UserPreference(this)
             sharedPrefs.setUser(UserModel("","",""))
 
@@ -47,9 +46,20 @@ class HomeActivity : AppCompatActivity() {
 
         binding.fabAddStory.setOnClickListener {
             val intent = Intent(this, AddStoryActivity::class.java)
-            startActivity(intent)
+//            startActivity(intent)
+            startActivityForResult(intent, REQUEST_CODE)
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE) {
+            val mainViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(HomeViewModel::class.java)
+            mainViewModel.getStories(token)
+        }
+    }
+
     private fun setStoryData(Stories: List<ListStoryItem>) {
         val adapter = StoryAdapter()
         Log.d("Titan","Recycler")
@@ -58,5 +68,6 @@ class HomeActivity : AppCompatActivity() {
     }
     companion object {
         const val STORY_ID = "story_id"
+        const val REQUEST_CODE = 1
     }
 }
