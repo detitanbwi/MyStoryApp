@@ -21,12 +21,10 @@ class HomeViewModel : ViewModel() {
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
-    init {
-
-    }
 
     fun getStories(token: String) {
         _isLoading.value = true
+        Log.d("getStories","Called")
         val client = ApiConfig.getApiService().getStories("Bearer $token")
         client.enqueue(object : Callback<StoryListResponse> {
             override fun onResponse(

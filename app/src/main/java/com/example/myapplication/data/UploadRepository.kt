@@ -16,7 +16,8 @@ class UploadRepository private constructor(
     private val apiService: ApiService
 ) {
 
-    fun uploadImage(token: String,imageFile: File, description: String) = liveData {
+    fun uploadImage(token: String,imageFile: File, description: String, lat: Double? = null,
+                    lon: Double? = null) = liveData {
         emit(ResultState.Loading)
         val requestBody = description.toRequestBody("text/plain".toMediaType())
         val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
@@ -25,8 +26,14 @@ class UploadRepository private constructor(
             imageFile.name,
             requestImageFile
         )
+        val latRequestBody = lat?.toString()?.toRequestBody("text/plain".toMediaType())
+        val lonRequestBody = lon?.toString()?.toRequestBody("text/plain".toMediaType())
         try {
-            val successResponse = apiService.postStory(token,multipartBody, requestBody)
+            val successResponse = if (lat != null && lon != null) {
+                apiService.postStory(token, multipartBody, requestBody, latRequestBody, lonRequestBody)
+            } else {
+                apiService.postStory(token, multipartBody, requestBody)
+            }
             emit(ResultState.Success(successResponse))
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()?.string()

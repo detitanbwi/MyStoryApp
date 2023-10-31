@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -26,6 +27,9 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 
 
 class AddStoryActivity : AppCompatActivity() {
@@ -39,6 +43,8 @@ class AddStoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddStoryBinding
     private lateinit var progressDialog: ProgressDialog
     private lateinit var token: String
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var myLocation: LatLng
 
 
     private val viewModel by viewModels<AddStoryViewModel> {
@@ -48,6 +54,8 @@ class AddStoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        getMyLastLocation()
         progressDialog = ProgressDialog(this)
         progressDialog.setMessage("Posting...")
         progressDialog.setCancelable(false)
@@ -65,13 +73,15 @@ class AddStoryActivity : AppCompatActivity() {
                 startCamera()
             }
             buttonAdd.setOnClickListener {
-                if (token != null) {
-                    progressDialog.show()
+                progressDialog.show()
+                if(cbLocation.isChecked){
+                    uploadImage(token,edAddDescription.text.toString(),myLocation.latitude,myLocation.longitude)
+                }else{
                     uploadImage(token,edAddDescription.text.toString())
                 }
+
             }
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -89,12 +99,11 @@ class AddStoryActivity : AppCompatActivity() {
         }
     }
 
-    private fun uploadImage(token: String, description: String) {
+    private fun uploadImage(token: String, description: String, lat: Double? = null, lng: Double? = null) {
         currentImageUri?.let { uri ->
             val imageFile = uriToFile(uri, this).reduceFileImage()
             Log.d("Image File", "showImage: ${imageFile.path}")
-
-            viewModel.uploadImage("Bearer $token" ,imageFile, description).observe(this) { result ->
+            viewModel.uploadImage("Bearer $token" ,imageFile, description, lat, lng).observe(this) { result ->
                 if (result != null) {
                     when (result) {
                         is ResultState.Loading -> {
@@ -129,15 +138,57 @@ class AddStoryActivity : AppCompatActivity() {
             startActivityForResult(it,PICK_IMAGE_REQUEST)
         }
     }
-
-    private fun openCamera() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
-        }
+    private fun checkPermission(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            when {
+                permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false -> {
+                    // Precise location access granted.
+                    getMyLastLocation()
+                }
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false -> {
+                    // Only approximate location access granted.
+                    getMyLastLocation()
+                }
+                else -> {
+                    // No location access granted.
+                }
+            }
+        }
+    private fun getMyLastLocation() {
+        if     (checkPermission(Manifest.permission.ACCESS_FINE_LOCATION) &&
+            checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+        ){
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    myLocation = LatLng(location.latitude,location.longitude)
+                    binding.cbLocation.text = "Tell Location (${location.latitude},${location.longitude})"
+
+                } else {
+                    Toast.makeText(
+                        this@AddStoryActivity,
+                        "Location is not found. Try Again",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        } else {
+            requestPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
     private fun startCamera() {
         currentImageUri = getImageUri(this)
         launcherIntentCamera.launch(currentImageUri)
@@ -159,7 +210,7 @@ class AddStoryActivity : AppCompatActivity() {
             this,
             REQUIRED_PERMISSION
         ) == PackageManager.PERMISSION_GRANTED
-    fun getImageUri(context: Context): Uri {
+    private fun getImageUri(context: Context): Uri {
         var uri: Uri? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val contentValues = ContentValues().apply {
@@ -176,7 +227,6 @@ class AddStoryActivity : AppCompatActivity() {
         }
         return uri ?: getImageUriForPreQ(context)
     }
-
     private fun getImageUriForPreQ(context: Context): Uri {
         val filesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val imageFile = File(filesDir, "/MyCamera/$timeStamp.jpg")
@@ -188,7 +238,6 @@ class AddStoryActivity : AppCompatActivity() {
         )
         //content://com.dicoding.picodiploma.mycamera.fileprovider/my_images/MyCamera/20230825_133659.jpg
     }
-
     private fun showToast(message: String,isSuccess: Boolean) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         if (isSuccess){

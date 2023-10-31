@@ -29,11 +29,11 @@ class StoryDetailActivity : AppCompatActivity() {
 
         storyDetailViewModel.storyDetail.observe(this){
             with(binding){
-                tvDetailSender.text = it.story.name
+                tvDetailName.text = it.story.name
                 tvDetailDescription.text = it.story.description
                 Glide.with(root)
                     .load(it.story.photoUrl)
-                    .into(ivDetailStories)
+                    .into(ivDetailPhoto)
             }
         }
         progressDialog = ProgressDialog(this)

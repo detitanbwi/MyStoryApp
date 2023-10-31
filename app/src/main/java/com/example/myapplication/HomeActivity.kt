@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +17,9 @@ import com.example.myapplication.databinding.ActivityHomeBinding
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
     private lateinit var token: String
+    private val storyPagingViewModel: StoryPagingViewModel by viewModels {
+        PagingViewModelFactory(this)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -29,12 +33,16 @@ class HomeActivity : AppCompatActivity() {
         val userPreference = UserPreference(this)
         token = userPreference.getUser().token.toString()
 
-        mainViewModel.getStories(token)
+//        mainViewModel.getStories(token)
 
-        mainViewModel.stories.observe(this){
-            setStoryData(it.listStory)
+//        mainViewModel.stories.observe(this){
+//            setStoryData(it.listStory)
+//        }
+
+        binding.cvStoryMaps.setOnClickListener {
+            val intent = Intent(this, StoryMapsActivity::class.java)
+            startActivity(intent)
         }
-
         binding.fabLogout.setOnClickListener {
             val sharedPrefs = UserPreference(this)
             sharedPrefs.setUser(UserModel("","",""))
@@ -46,9 +54,10 @@ class HomeActivity : AppCompatActivity() {
 
         binding.fabAddStory.setOnClickListener {
             val intent = Intent(this, AddStoryActivity::class.java)
-//            startActivity(intent)
             startActivityForResult(intent, REQUEST_CODE)
         }
+
+        getData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -58,6 +67,18 @@ class HomeActivity : AppCompatActivity() {
             val mainViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(HomeViewModel::class.java)
             mainViewModel.getStories(token)
         }
+    }
+    private fun getData() {
+        val adapter = StoryPagingAdapter()
+        binding.rvStory.adapter = adapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                adapter.retry()
+            }
+        )
+        storyPagingViewModel.story.observe(this, {
+            adapter.submitData(lifecycle, it)
+            Log.d("OK",it.toString())
+        })
     }
 
     private fun setStoryData(Stories: List<ListStoryItem>) {

@@ -7,4 +7,8 @@ object Injection {
         val apiService = ApiConfig.getApiService()
         return UploadRepository.getInstance(apiService)
     }
+    fun providePagingRepository(): StoryRepository {
+        val apiService = ApiConfig.getApiService()
+        return StoryRepository(apiService)
+    }
 }

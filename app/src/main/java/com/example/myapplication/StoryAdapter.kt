@@ -16,10 +16,10 @@ class StoryAdapter : ListAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_
 
     class MyViewHolder(val binding: ItemStoryBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(preview: ListStoryItem){
-            binding.tvSender.text = preview.name
+            binding.tvItemName.text = preview.name
             Glide.with(binding.root)
                 .load(preview.photoUrl)
-                .into(binding.ivStoryItem)
+                .into(binding.ivItemPhoto)
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {

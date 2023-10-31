@@ -17,5 +17,5 @@ import okhttp3.Response
 import java.io.File
 
 class AddStoryViewModel(private val repository: UploadRepository) : ViewModel() {
-    fun uploadImage(token: String, file: File, description: String) = repository.uploadImage(token ,file, description)
+    fun uploadImage(token: String, file: File, description: String,lat: Double? = null, lon: Double? = null) = repository.uploadImage(token ,file, description, lat, lon)
 }
