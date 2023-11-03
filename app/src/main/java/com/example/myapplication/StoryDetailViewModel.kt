@@ -6,8 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.myapplication.data.response.DetailStoryResponse
-import com.example.myapplication.data.response.ListStoryItem
-import com.example.myapplication.data.response.StoryListResponse
 import com.example.myapplication.data.retrofit.ApiConfig
 import retrofit2.Call
 import retrofit2.Callback

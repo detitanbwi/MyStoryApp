@@ -1,4 +1,5 @@
 package com.example.myapplication
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -20,14 +21,23 @@ class StoryPagingAdapter  :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val data = getItem(position)
         if (data != null) {
+            holder.binding.cvStory.setOnClickListener {
+                val context = holder.binding.root.context
+                val storyId = data.id
+
+                val moveIntent = Intent(context, StoryDetailActivity::class.java)
+                moveIntent.putExtra(HomeActivity.STORY_ID, storyId)
+                context.startActivity(moveIntent)
+            }
             holder.bind(data)
         }else{
             Log.d("OK","Data tidak ada")
         }
     }
 
-    class MyViewHolder(private val binding: ItemStoryBinding) :
+    class MyViewHolder(val binding: ItemStoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(data: ListStoryItem) {
             binding.tvItemName.text = data.name
             Glide.with(binding.root)
@@ -37,7 +47,7 @@ class StoryPagingAdapter  :
     }
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ListStoryItem>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ListStoryItem>() {
             override fun areItemsTheSame(oldItem: ListStoryItem, newItem: ListStoryItem): Boolean {
                 return oldItem == newItem
             }

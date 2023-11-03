@@ -79,7 +79,6 @@ class AddStoryActivity : AppCompatActivity() {
                 }else{
                     uploadImage(token,edAddDescription.text.toString())
                 }
-
             }
         }
     }
@@ -104,6 +103,7 @@ class AddStoryActivity : AppCompatActivity() {
             val imageFile = uriToFile(uri, this).reduceFileImage()
             Log.d("Image File", "showImage: ${imageFile.path}")
             viewModel.uploadImage("Bearer $token" ,imageFile, description, lat, lng).observe(this) { result ->
+                progressDialog.dismiss()
                 if (result != null) {
                     when (result) {
                         is ResultState.Loading -> {

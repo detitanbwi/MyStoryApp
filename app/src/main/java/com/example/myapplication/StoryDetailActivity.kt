@@ -4,11 +4,8 @@ import android.app.ProgressDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.example.myapplication.databinding.ActivityHomeBinding
 import com.example.myapplication.databinding.ActivityStoryDetailBinding
 
 class StoryDetailActivity : AppCompatActivity() {

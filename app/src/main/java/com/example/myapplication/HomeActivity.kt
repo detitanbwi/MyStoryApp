@@ -1,17 +1,13 @@
 package com.example.myapplication
 
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.data.UserModel
-import com.example.myapplication.data.response.ListStoryItem
 import com.example.myapplication.databinding.ActivityHomeBinding
 
 class HomeActivity : AppCompatActivity() {
@@ -25,19 +21,16 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val mainViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(HomeViewModel::class.java)
-
         val layoutManager = LinearLayoutManager(this)
         binding.rvStory.layoutManager = layoutManager
 
         val userPreference = UserPreference(this)
         token = userPreference.getUser().token.toString()
 
-//        mainViewModel.getStories(token)
-
-//        mainViewModel.stories.observe(this){
-//            setStoryData(it.listStory)
-//        }
+        binding.swipeRefresh.setOnRefreshListener {
+            getData()
+            binding.swipeRefresh.isRefreshing = false
+        }
 
         binding.cvStoryMaps.setOnClickListener {
             val intent = Intent(this, StoryMapsActivity::class.java)
@@ -51,7 +44,6 @@ class HomeActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-
         binding.fabAddStory.setOnClickListener {
             val intent = Intent(this, AddStoryActivity::class.java)
             startActivityForResult(intent, REQUEST_CODE)
@@ -75,18 +67,12 @@ class HomeActivity : AppCompatActivity() {
                 adapter.retry()
             }
         )
-        storyPagingViewModel.story.observe(this, {
+        storyPagingViewModel.story.observe(this) {
             adapter.submitData(lifecycle, it)
-            Log.d("OK",it.toString())
-        })
+            Toast.makeText(this,"data diperbarui", Toast.LENGTH_SHORT).show()
+        }
     }
 
-    private fun setStoryData(Stories: List<ListStoryItem>) {
-        val adapter = StoryAdapter()
-        Log.d("Titan","Recycler")
-        adapter.submitList(Stories)
-        binding.rvStory.adapter = adapter
-    }
     companion object {
         const val STORY_ID = "story_id"
         const val REQUEST_CODE = 1

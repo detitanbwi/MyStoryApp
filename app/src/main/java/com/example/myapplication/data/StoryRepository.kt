@@ -12,14 +12,14 @@ import androidx.paging.liveData
 import com.example.myapplication.data.response.ListStoryItem
 import com.example.myapplication.data.retrofit.ApiService
 
-class StoryRepository(private val apiService: ApiService) {
+class StoryRepository(private val apiService: ApiService, private val token: String) {
     fun getStories(): LiveData<PagingData<ListStoryItem>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 20
             ),
             pagingSourceFactory = {
-                StoryPagingSource(apiService)
+                StoryPagingSource(apiService,token)
             }
         ).liveData
     }
